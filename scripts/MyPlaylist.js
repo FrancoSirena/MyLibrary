@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
 import Channel from "./Channel";
-import OpenLibraryService from './OpenLibraryService';
+import LibraryStorage from "./LibraryStorage";
 
 export default class MyPlaylist extends React.Component {
   state = {
@@ -19,9 +19,11 @@ export default class MyPlaylist extends React.Component {
   }
   addBook = (bookEntry) => {
     var myBooks = this.state.myBooks;
-    if (!myBooks.some(e => e.key == bookEntry.key))
+    if (!myBooks.some(e => e.key == bookEntry.key)){
       myBooks.push(bookEntry);
-    this.setState(bookEntry);
+    }
+    this.setState({myBooks});
+
   }
   makAsRead = (book) => {
     var readBooks = this.state.readBooks;

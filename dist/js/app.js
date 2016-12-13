@@ -44598,9 +44598,9 @@
 	
 	var _Channel2 = _interopRequireDefault(_Channel);
 	
-	var _OpenLibraryService = __webpack_require__(545);
+	var _LibraryStorage = __webpack_require__(549);
 	
-	var _OpenLibraryService2 = _interopRequireDefault(_OpenLibraryService);
+	var _LibraryStorage2 = _interopRequireDefault(_LibraryStorage);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -44639,8 +44639,10 @@
 	      var myBooks = _this.state.myBooks;
 	      if (!myBooks.some(function (e) {
 	        return e.key == bookEntry.key;
-	      })) myBooks.push(bookEntry);
-	      _this.setState(bookEntry);
+	      })) {
+	        myBooks.push(bookEntry);
+	      }
+	      _this.setState({ myBooks: myBooks });
 	    }, _this.makAsRead = function (book) {
 	      var readBooks = _this.state.readBooks;
 	      if (!_this.findBook(book)) readBooks.push(book);
@@ -44684,6 +44686,19 @@
 	}(_react2.default.Component);
 	
 	exports.default = MyPlaylist;
+
+/***/ },
+/* 549 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var LibraryStorage = {};
+	
+	exports.default = LibraryStorage;
 
 /***/ }
 /******/ ]);
