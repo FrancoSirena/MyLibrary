@@ -9,7 +9,6 @@ gulp.task("webpack", function(callback) {
                 path: "./dist/js",
                 filename: "app.js"
             },
-
             devtool: 'source-map' ,
             module: {
                loaders: [
@@ -23,12 +22,11 @@ gulp.task("webpack", function(callback) {
                     }
                 ]
             }
-
-    }, function(err, stats) {
-        if(err) throw new gutil.PluginError("webpack", err);
-        console.log("[webpack]", stats.toString({
-            // output options
-        }));
-        callback();
+            }, function(err, stats) {
+                if(err) throw new gutil.PluginError("webpack", err);
+                console.log("[webpack]", stats.toString({
+                    // output options
+                }));
+                callback();
     });
 });
