@@ -8,20 +8,17 @@ import Channel from "./Channel";
 export default class SearchApi extends React.Component {
 	state = {
 		myBooks: [],
-		titleFilter: "",
-		authorFilter: "",
 		isLoading: false
 	}
 	setFilter = () => {
 		var titleFilter = this.titleFilter.value;
 		var authorFilter = this.authorFilter.value;
-		this.setState({titleFilter});
-		this.setState({authorFilter});
+		var keywordsFilter = this.keywordsFilter.value;
 		var myBooks = [];
 		var isLoading = false;
 
 		if (titleFilter != '' || authorFilter != ''){
-			myBooks = OpenLibraryService.API.OpenLibrary.searchBook(titleFilter, authorFilter).then((myBooks) =>{
+			myBooks = OpenLibraryService.API.OpenLibrary.searchBook(titleFilter, authorFilter, keywordsFilter).then((myBooks) =>{
 				this.setState({myBooks});
 			});
 			isLoading = true;
@@ -43,16 +40,19 @@ export default class SearchApi extends React.Component {
 			<div>
 			<h4> Search Book </h4>
 			<Col md={12}>
+				<FormControl type="text" inputRef={ref => { this.keywordsFilter = ref; }} placeholder="Search By KeyWords" maxLength="100" />
+			</Col>
+			<Col md={12}>
 				<FormControl type="text" inputRef={ref => { this.titleFilter = ref; }} placeholder="Search By Title" maxLength="100" />
 			</Col>
 			<Col xs={8} md={8}>
 				<FormControl type="text" inputRef={ref => { this.authorFilter = ref; }}  placeholder="Search By Author" maxLength="100" />
 			</Col>
 			<Col xs={4} md={4}>
-		    <Button onClick={this.setFilter.bind(this)}>
+		    <Button bsSize="xsmall" onClick={this.setFilter.bind(this)}>
 	      	<Glyphicon glyph="glyphiocon glyphicon-search" />
 		    </Button>
-				<Button onClick={this.clearList.bind(this)}>
+				<Button bsSize="xsmall" onClick={this.clearList.bind(this)}>
 	      	<Glyphicon glyph="glyphiocon glyphicon-repeat" />
 		    </Button>
 			</Col>

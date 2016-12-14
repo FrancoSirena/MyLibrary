@@ -7,9 +7,10 @@ var OpenLibraryService = {
 				.then(response => response.json())
 		},
 		OpenLibrary: {
-			searchBook: (bookTitle, bookAuthor) => {
-				var filter = bookTitle != '' ? `q=${bookTitle}` : '';
+			searchBook: (bookTitle, bookAuthor, keywordsFilter) => {
+				var filter = bookTitle != '' ? `title=${bookTitle}` : '';
 				filter = filter != '' && bookAuthor!='' ? filter+`&author=${bookAuthor}`: filter;
+				filter = filter != '' && bookAuthor!='' ? filter+`&q=${keywordsFilter}`: filter;
 				return OpenLibraryService.API.get(`?${filter}`)
 					.then((response)=>{
 						return response.docs;

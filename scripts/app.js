@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import SearchApi from './SearchApi';
-import MyPlaylist from './MyPlaylist';
+import BooksList from './BooksList';
 import {Navbar, Nav, NavItem, Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
 
 render(
@@ -21,8 +21,13 @@ render(
       <h1>My BookList ! </h1>
       <p className="lead"> Keep on track of your readings ! </p>
     </Col>
-		<Col xs={8} md={8}>
-      <MyPlaylist />
+		<Col xs={4} md={4}>
+			<h4> Books Read </h4>
+      <BooksList readBooks={true} />
+    </Col>
+		<Col xs={4} md={4}>
+			<h4> Books Pending </h4>
+      <BooksList readBooks={false} />
     </Col>
 		<Col xs={4} md={4}>
 			<SearchApi />
