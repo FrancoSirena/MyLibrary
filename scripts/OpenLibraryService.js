@@ -1,7 +1,7 @@
 var OpenLibraryService = {
 	API: {
-		url: 'http://openlibrary.org/search.json',
-		imgUrl: "http://covers.openlibrary.org/b/id/",
+		url: '//openlibrary.org/search.json',
+		imgUrl: "//covers.openlibrary.org/b/id/",
 		get: (url)=> {
 			return fetch(`${OpenLibraryService.API.url}${url}`)
 				.then(response => response.json())
