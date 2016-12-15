@@ -1,0 +1,20 @@
+.left {
+  float: left;
+  width: 70%; }
+
+.right {
+  float: right;
+  width: 30%; }
+
+.pull-left {
+  float: left !important; }
+
+.pull-right {
+  float: right !important; }
+
+.clearfix:before, .clearfix:after {
+  content: " ";
+  display: table; }
+
+.clearfix:after {
+  clear: both; }
