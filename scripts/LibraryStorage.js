@@ -1,38 +1,21 @@
 var LibraryStorage = {
   DB:{
-    searchReadBook: (book) => {
-      var book = localStorage.getItem(`myLibReadBook${book.key}`);
+    searchBook: (book) => {
+      var book = localStorage.getItem(`myPersonalLib${book.key}`);
       return book;
     },
-    saveReadBook: (readBook) => {
-      localStorage.removeItem(`myLibPendingBook${readBook.key}`);
-      localStorage.setItem(`myLibReadBook${readBook.key}`, JSON.stringify(readBook));
+    saveBook: (book) => {
+      localStorage.setItem(`myPersonalLib${book.key}`, JSON.stringify(book));
     },
-    savePendingBook: (pendingBook) => {
-      localStorage.setItem(`myLibPendingBook${pendingBook.key}`, JSON.stringify(pendingBook));
+    removeBook: (book) => {
+      localStorage.removeItem(`myPersonalLib${book.key}`);
     },
-    removeReadBook: (readBook) => {
-      localStorage.removeItem(`myLibReadBook${readBook.key}`);
-    },
-    removePendingBook: (pendingBook) => {
-      localStorage.removeItem(`myLibPendingBook${pendingBook.key}`);
-    },
-    getAllPendingBooks: () => {
+    getAllBooks: () => {
       var keys = Object.keys(localStorage);
       var books = [];
       var i = keys.length;
       while ( i-- ) {
-        if (keys[i].indexOf("myLibPendingBook") >-1)
-          books.push(JSON.parse(localStorage.getItem(keys[i])));
-      }
-      return books;
-    },
-    getAllReadBooks: () => {
-      var keys = Object.keys(localStorage);
-      var books = [];
-      var i = keys.length;
-      while ( i-- ) {
-        if (keys[i].indexOf("myLibReadBook") >-1)
+        if (keys[i].indexOf("myPersonalLib") >-1)
           books.push(JSON.parse(localStorage.getItem(keys[i])));
       }
       return books;

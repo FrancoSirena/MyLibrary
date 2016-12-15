@@ -15,7 +15,7 @@ export default class BooksList extends React.Component {
   componentDidMount = () => {
     Channel.on('myPlaylist.addBook', this.addBook);
     var myBooks = this.state.myBooks;
-    myBooks = LibraryStorage.DB.getAllPendingBooks();
+    myBooks = LibraryStorage.DB.getAllBooks();
     this.setState({myBooks});
   }
   componentWillUnmount = () => {
@@ -27,19 +27,19 @@ export default class BooksList extends React.Component {
       myBooks.push(bookEntry);
     }
     this.setState({myBooks});
-    //LibraryStorage.DB.savePendingBook(bookEntry);
+    LibraryStorage.DB.saveBook(bookEntry);
   }
   handleDateChange = (index, value) => {
     var myBooks = this.state.myBooks;
     myBooks[index].dateRead = value;
     this.setState({myBooks});
   }
-  removeBook = (item) => {
-    if (this.props.readBooks) {
-      LibraryStorage.DB.removeReadBook(item);
-    } else {
-      LibraryStorage.DB.removePendingBook(item);
-    }
+  removeBook = (item, index) => {
+    var myBooks = this.state.myBooks;
+    myBooks.splice(index, 1);
+
+    this.setState({myBooks});
+    LibraryStorage.DB.removeBook(item);
   }
   render() {
     var styleDate = {width:'120px'};
@@ -48,29 +48,33 @@ export default class BooksList extends React.Component {
 
     return(
       <Col md={12} xs={12}>
-        <ListGroup>
-        {
-          this.state.myBooks.map((item, index) => {return(
-                <ListGroupItem
-                    key={index}>
-                    <div className="clearfix" style={divStyle}>
-                      <h4 className="pull-left" style={titleStyle}> {item.title +'-'+ (item.subtitle?item.subtitle:' ')} </h4>
-                      <a className="pull-right" onClick={this.removeBook.bind(this,item)}> X </a>
-                    </div>
-                    {item.isRead ?
-                      <DateField
-                          defaultValue={this.props.readBooks?item.dateRead:dateNow}
-                          dateFormat="DD/MM/YYYY"
-                          key={`date${index}`}
-                          disabled={this.props.readBooks}
-                          style={styleDate} onChange={this.handleDateChange.bind(this, index)}
-                        />
-                        : '' }
-                </ListGroupItem>
-              );
-          })
-        }
-        </ListGroup>
+        { this.state.myBooks.length ?
+          <ListGroup ref="booksShelf">
+          {
+            this.state.myBooks.map((item, index) => {return(
+                  <ListGroupItem
+                      key={index}>
+                      <div className="clearfix" style={divStyle}>
+                        <h4 className="pull-left" style={titleStyle}> {item.title +'-'+ (item.subtitle?item.subtitle:' ')} </h4>
+                        <Button className="pull-right xsmall" onClick={this.removeBook.bind(this,item, index)}>
+                            <Glyphicon glyph="remove" />
+                        </Button>
+                      </div>
+                      {item.isRead ?
+                        <DateField
+                            defaultValue={this.props.readBooks?item.dateRead:dateNow}
+                            dateFormat="DD/MM/YYYY"
+                            key={`date${index}`}
+                            disabled={this.props.readBooks}
+                            style={styleDate} onChange={this.handleDateChange.bind(this, index)}
+                          />
+                          : '' }
+                  </ListGroupItem>
+                );
+            })
+          }
+          </ListGroup>:
+          '' }
       </Col>);
   }
 }
