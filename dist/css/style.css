@@ -18,3 +18,8 @@
 
 .clearfix:after {
   clear: both; }
+
+.book-title {
+  with: 90%; }
+  .book-title:hover {
+    cursor: pointer; }

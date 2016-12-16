@@ -33,19 +33,22 @@ export default class SearchApi extends React.Component {
   addToQueue = (bookEntry) => {
     var book = bookEntry;
     book.isRead = false;
-    Channel.emit('myPlaylist.addBook', book );
+    Channel.emit('myBooklist.addBook', book );
   }
   addToRead = (bookEntry) => {
     var book = bookEntry;
     book.isRead = true;
-    Channel.emit('myPlaylist.addBook', book );
+    Channel.emit('myBooklist.addBook', book );
+  }
+  showBookDetail = (book) =>  {
+    Channel.emit('myBooklist.showBookDetail', book ); 
   }
   render(){
     var state= this.state;
     var authorStyle = {width: '70%'};
     var styleDate = {width:'120px'};
     var divStyle = {width: '100%'};
-    var titleStyle = {width: '70%'};
+  
 
     return(
       <div>
@@ -75,7 +78,7 @@ export default class SearchApi extends React.Component {
               <ListGroupItem
                   key={index}>
                   <div className="clearfix" style={divStyle}>
-                    <h5 className="pull-left" style={titleStyle}> {item.title +'-'+ (item.subtitle?item.subtitle:' ')} </h5>
+                    <h5 className="pull-left book-title" onClick={this.showBookDetail.bind(this,item)}> {item.title +'-'+ (item.subtitle?item.subtitle:' ')} </h5>
                     <Button bsSize="xsmall" className="pull-right" onClick={this.addToRead.bind(this, item)} >
                       <Glyphicon  glyph="book" /> Mark as Read
                     </Button>

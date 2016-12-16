@@ -2,6 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import SearchApi from './SearchApi';
 import BooksList from './BooksList';
+import BookDetail from './BookDetail';
 import {Navbar, Nav, NavItem, Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
 
 
@@ -18,6 +19,7 @@ render(
 	        <NavItem eventKey={2} href="#">About Me</NavItem>
 	      </Nav>
 	    </Navbar>
+	    <BookDetail />
 	    <Col xs={12} md={12} className="text-center">
 	      <h1>My BookList ! </h1>
 	      <p className="lead"> Keep on track of your readings ! </p>

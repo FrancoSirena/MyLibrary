@@ -25,3 +25,10 @@
     clear: both;
   }
 }
+
+.book-title {
+  with: 90%;
+  &:hover {
+    cursor: pointer
+  }
+}

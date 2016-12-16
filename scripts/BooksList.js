@@ -13,13 +13,13 @@ export default class BooksList extends React.Component {
     myBooks: []
   }
   componentDidMount = () => {
-    Channel.on('myPlaylist.addBook', this.addBook);
+    Channel.on('myBooklist.addBook', this.addBook);
     var myBooks = this.state.myBooks;
     myBooks = LibraryStorage.DB.getAllBooks();
     this.setState({myBooks});
   }
   componentWillUnmount = () => {
-    Channel.removeListener('myPlaylist.addBook', this.addBook);
+    Channel.removeListener('myBooklist.addBook', this.addBook);
   }
   addBook = (bookEntry) => {
     var myBooks = this.state.myBooks;
@@ -41,10 +41,12 @@ export default class BooksList extends React.Component {
     this.setState({myBooks});
     LibraryStorage.DB.removeBook(item);
   }
+  showBookDetail = (book) =>  {
+    Channel.emit('myBooklist.showBookDetail', book ); 
+  }
   render() {
     var styleDate = {width:'120px'};
     var divStyle = {width: '100%'};
-    var titleStyle = {width: '90%'};
 
     return(
       <Col md={12} xs={12}>
@@ -55,7 +57,7 @@ export default class BooksList extends React.Component {
                   <ListGroupItem
                       key={index}>
                       <div className="clearfix" style={divStyle}>
-                        <h4 className="pull-left" style={titleStyle}> {item.title +'-'+ (item.subtitle?item.subtitle:' ')} </h4>
+                        <h4 className="pull-left book-title"  onClick={this.showBookDetail.bind(this,item)}> {item.title +'-'+ (item.subtitle?item.subtitle:' ')} </h4>
                         <Button className="pull-right xsmall" onClick={this.removeBook.bind(this,item, index)}>
                             <Glyphicon glyph="remove" />
                         </Button>
