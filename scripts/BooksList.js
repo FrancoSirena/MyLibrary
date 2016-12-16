@@ -3,7 +3,7 @@ import {Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'rea
 import Channel from "./Channel";
 import LibraryStorage from "./LibraryStorage";
 import {DateField} from 'react-date-picker';
-
+import BookItem from './BookItem';
 
 const dateNow = new Date();
 
@@ -42,7 +42,7 @@ export default class BooksList extends React.Component {
     LibraryStorage.DB.removeBook(item);
   }
   showBookDetail = (book) =>  {
-    Channel.emit('myBooklist.showBookDetail', book ); 
+    Channel.emit('myBooklist.showBookDetail', book );
   }
   render() {
     var styleDate = {width:'120px'};
@@ -56,21 +56,7 @@ export default class BooksList extends React.Component {
             this.state.myBooks.map((item, index) => {return(
                   <ListGroupItem
                       key={index}>
-                      <div className="clearfix" style={divStyle}>
-                        <h4 className="pull-left book-title"  onClick={this.showBookDetail.bind(this,item)}> {item.title +'-'+ (item.subtitle?item.subtitle:' ')} </h4>
-                        <Button className="pull-right xsmall" onClick={this.removeBook.bind(this,item, index)}>
-                            <Glyphicon glyph="remove" />
-                        </Button>
-                      </div>
-                      {item.isRead ?
-                        <DateField
-                            defaultValue={this.props.readBooks?item.dateRead:dateNow}
-                            dateFormat="DD/MM/YYYY"
-                            key={`date${index}`}
-                            disabled={this.props.readBooks}
-                            style={styleDate} onChange={this.handleDateChange.bind(this, index)}
-                          />
-                          : '' }
+                      <BookItem book={item} canAddToQueue={false} />
                   </ListGroupItem>
                 );
             })

@@ -26,8 +26,12 @@
   }
 }
 
+img {
+	background: url('/style/gifs/spin.gif') center no-repeat;
+}
+
 .book-title {
-  with: 90%;
+  width: 90%;
   &:hover {
     cursor: pointer
   }

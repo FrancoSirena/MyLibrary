@@ -3,9 +3,8 @@ import {render} from 'react-dom';
 import SearchApi from './SearchApi';
 import BooksList from './BooksList';
 import BookDetail from './BookDetail';
+import OpenLibraryService from './OpenLibraryService';
 import {Navbar, Nav, NavItem, Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
-
-
 render(
 	<Col xs={12} md={12}>
 	    <Navbar inverse collapseOnSelect>

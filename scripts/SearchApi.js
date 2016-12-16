@@ -4,6 +4,7 @@ import {Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'rea
 import OpenLibraryService from './OpenLibraryService';
 import Channel from "./Channel";
 import {DateField} from 'react-date-picker';
+import BookItem from './BookItem';
 
 export default class SearchApi extends React.Component {
   state = {
@@ -41,14 +42,14 @@ export default class SearchApi extends React.Component {
     Channel.emit('myBooklist.addBook', book );
   }
   showBookDetail = (book) =>  {
-    Channel.emit('myBooklist.showBookDetail', book ); 
+    Channel.emit('myBooklist.showBookDetail', book);
   }
   render(){
     var state= this.state;
     var authorStyle = {width: '70%'};
     var styleDate = {width:'120px'};
     var divStyle = {width: '100%'};
-  
+
 
     return(
       <div>
@@ -74,18 +75,11 @@ export default class SearchApi extends React.Component {
         </div>
         { state.myBooks.length > 0 ?
           <ListGroup>{
-            state.myBooks.filter(e => e.has_fulltext).map((item, index)=>{return(
+            state.myBooks.map((item, index)=>{
+              return(
               <ListGroupItem
                   key={index}>
-                  <div className="clearfix" style={divStyle}>
-                    <h5 className="pull-left book-title" onClick={this.showBookDetail.bind(this,item)}> {item.title +'-'+ (item.subtitle?item.subtitle:' ')} </h5>
-                    <Button bsSize="xsmall" className="pull-right" onClick={this.addToRead.bind(this, item)} >
-                      <Glyphicon  glyph="book" /> Mark as Read
-                    </Button>
-                    <Button bsSize="xsmall" className="pull-right" onClick={this.addToQueue.bind(this, item)} >
-                      <Glyphicon  glyph="list" /> Add to Queue
-                    </Button>
-                  </div>
+                  <BookItem book={item} canAddToQueue={true} />
               </ListGroupItem> );
             })}
         </ListGroup> :
