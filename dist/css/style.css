@@ -26,3 +26,8 @@ img {
   width: 90%; }
   .book-title:hover {
     cursor: pointer; }
+
+.close {
+  top: 0;
+  right: 0;
+  position: absolute; }

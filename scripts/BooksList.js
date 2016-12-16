@@ -14,6 +14,7 @@ export default class BooksList extends React.Component {
   }
   componentDidMount = () => {
     Channel.on('myBooklist.addBook', this.addBook);
+    Channel.on('myBooklist.removeBook', this.removeBook);
     var myBooks = this.state.myBooks;
     myBooks = LibraryStorage.DB.getAllBooks();
     this.setState({myBooks});
@@ -39,7 +40,6 @@ export default class BooksList extends React.Component {
     myBooks.splice(index, 1);
 
     this.setState({myBooks});
-    LibraryStorage.DB.removeBook(item);
   }
   showBookDetail = (book) =>  {
     Channel.emit('myBooklist.showBookDetail', book );
@@ -56,7 +56,7 @@ export default class BooksList extends React.Component {
             this.state.myBooks.map((item, index) => {return(
                   <ListGroupItem
                       key={index}>
-                      <BookItem book={item} canAddToQueue={false} />
+                      <BookItem book={item} index={index} canRemove={true} canAddToQueue={false} />
                   </ListGroupItem>
                 );
             })

@@ -5,6 +5,9 @@ var LibraryStorage = {
       return book;
     },
     saveBook: (book) => {
+      if (LibraryStorage.DB.searchBook(book) != null)
+        localStorage.removeItem(`myPersonalLib${book.key}`);
+        
       localStorage.setItem(`myPersonalLib${book.key}`, JSON.stringify(book));
     },
     removeBook: (book) => {

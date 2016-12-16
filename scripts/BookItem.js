@@ -1,27 +1,46 @@
 import React from 'react';
-import TextField from 'material-ui/TextField';
-import {Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
+import {FormGroup, ControlLabel,Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
 import OpenLibraryService from './OpenLibraryService';
 import Channel from "./Channel";
-import {DateField} from 'react-date-picker';
+import DatePicker from 'react-bootstrap-date-picker';
+import LibraryStorage from "./LibraryStorage";
 
 export default class BookItem extends React.Component {
-  addToQueue = (bookEntry) => {
-    var book = bookEntry;
+  state = {
+    book: ''
+  }
+  componentDidMount = () => {
+    var book = this.state.book;
+    book = this.props.book;
+    this.setState({book});
+  }
+  addToQueue = () => {
+    var book = this.props.book;
     book.isRead = false;
     Channel.emit('myBooklist.addBook', book );
   }
-  addToRead = (bookEntry) => {
-    var book = bookEntry;
+  addToRead = () => {
+    var book = this.state.book;
     book.isRead = true;
+    this.setState({book});
     Channel.emit('myBooklist.addBook', book );
   }
-  showBookDetail = (book) =>  {
-    Channel.emit('myBooklist.showBookDetail', book);
+  showBookDetail = () =>  {
+    Channel.emit('myBooklist.showBookDetail', this.state.book);
+  }
+  removeBook = () => {
+    LibraryStorage.DB.removeBook(item);
+    Channel.emit('myBooklist.removeBook', this.state.book, this.props.index);
+  }
+  saveDateRead = () => {
+    var book = this.state.book;
+    book.dateRead = this.dateInput.state.selectedDate.toISOString();
+    this.setState({book});
+    LibraryStorage.DB.saveBook(book);
   }
   render(){
     var authorStyle = {width: '70%'};
-    var styleDate = {width:'120px'};
+    var styleDate = {width:'120px',float:'left'};
     var divStyle = {width: '100%'};
     var item = this.props.book;
     return(
@@ -30,15 +49,30 @@ export default class BookItem extends React.Component {
             <h5 className="book-title" onClick={this.showBookDetail.bind(this,item)}> {item.title} </h5>
             {item.subtitle ? <h6> {item.subtitle} </h6> : '' }
             <h6> {item.author_name?item.author_name[0]: '' }</h6>
-            <h7> {item.publisher ? item.publisher[0]: ''} {item.publish_date ?item.publish_date[0]: ''} </h7>
+            <small> {item.publisher ? item.publisher[0]: ''} {item.publish_date ?item.publish_date[0]: ''} </small>
           </Col>
           <Col md={6}  >
-            <Button  bsSize="xsmall" className="pull-right" onClick={this.addToRead.bind(this, item)} >
-              <Glyphicon  glyph="book" /> Mark as Read
-            </Button>
-            <Button show={this.props.canAddToQueue} bsSize="xsmall" className="pull-right" onClick={this.addToQueue.bind(this, item)} >
-              <Glyphicon  glyph="list" /> Add to Queue
-            </Button>
+            {this.props.canRemove ?
+              <Button onClick={this.removeBook.bind(this)} className="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </Button>: '' }
+            {!item.isRead ?
+              <Button  bsSize="xsmall" className="pull-right" onClick={this.addToRead.bind(this)} >
+                <Glyphicon  glyph="book" /> Mark as Read
+              </Button>:
+              <FormGroup>
+                  <ControlLabel>When:</ControlLabel>
+                  <DatePicker showClearButton={false}
+                      disabled={item.dateRead != null} id="datepicker" style={styleDate}
+                      dateFormat="DD/MM/YYYY"  ref={(input) => { this.dateInput = input; }}
+                      value={item.dateRead?item.dateRead:''} />
+                  <Button onClick={this.saveDateRead.bind(this)} bsSize="xsmall"><Glyphicon  glyph="check" /></Button>
+              </FormGroup>}
+            {this.props.canAddToQueue ?
+              <Button  bsSize="xsmall" className="pull-right" onClick={this.addToQueue.bind(this)} >
+                <Glyphicon  glyph="list" /> Add to Queue
+              </Button> : '' }
+
           </Col>
         </div>
     );
