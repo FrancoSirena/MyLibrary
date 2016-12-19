@@ -17,10 +17,30 @@ export default class BooksList extends React.Component {
     Channel.on('myBooklist.removeBook', this.removeBook);
     var myBooks = this.state.myBooks;
     myBooks = LibraryStorage.DB.getAllBooks();
+
+    myBooks = myBooks.sort(function (a, b) {
+                            if (!a.isRead){
+                              if (a.title > b.title){
+                                return 1;
+                              }
+                              if (a.title < b.title) {
+                                return -1;
+                              }
+                            } else {
+                              if (Date.parse(a.dateRead) < Date.parse(b.dateRead)) {
+                                return 1;
+                              }
+                              if (Date.parse(a.dateRead) > Date.parse(b.dateRead)) {
+                                return -1;
+                              }
+                            }
+                            return 0;
+                          });
     this.setState({myBooks});
   }
   componentWillUnmount = () => {
     Channel.removeListener('myBooklist.addBook', this.addBook);
+    Channel.removeListener('myBooklist.removeBook', this.removeBook);
   }
   addBook = (bookEntry) => {
     var myBooks = this.state.myBooks;
@@ -30,16 +50,14 @@ export default class BooksList extends React.Component {
     this.setState({myBooks});
     LibraryStorage.DB.saveBook(bookEntry);
   }
-  handleDateChange = (index, value) => {
+  removeBook = (item) => {
     var myBooks = this.state.myBooks;
-    myBooks[index].dateRead = value;
-    this.setState({myBooks});
-  }
-  removeBook = (item, index) => {
-    var myBooks = this.state.myBooks;
-    myBooks.splice(index, 1);
+    var index = myBooks.findIndex(c=>c.key == item.key);
+    if (index > -1){
+      myBooks.splice(index, 1);
 
-    this.setState({myBooks});
+      this.setState({myBooks});
+    }
   }
   showBookDetail = (book) =>  {
     Channel.emit('myBooklist.showBookDetail', book );
@@ -56,7 +74,7 @@ export default class BooksList extends React.Component {
             this.state.myBooks.map((item, index) => {return(
                   <ListGroupItem
                       key={index}>
-                      <BookItem book={item} index={index} canRemove={true} canAddToQueue={false} />
+                      <BookItem book={item} key={item.key} id={item.key} index={index} canRemove={true} canAddToQueue={false} canMarkAsRead={false} canPlayBook={true}/>
                   </ListGroupItem>
                 );
             })

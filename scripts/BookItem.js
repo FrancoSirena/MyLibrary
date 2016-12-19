@@ -1,5 +1,5 @@
 import React from 'react';
-import {FormGroup, ControlLabel,Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
+import {FormGroup, ButtonToolbar, ControlLabel,Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
 import OpenLibraryService from './OpenLibraryService';
 import Channel from "./Channel";
 import DatePicker from 'react-bootstrap-date-picker';
@@ -15,9 +15,10 @@ export default class BookItem extends React.Component {
     this.setState({book});
   }
   addToQueue = () => {
-    var book = this.props.book;
+    var book = this.state.book;
     book.isRead = false;
-    Channel.emit('myBooklist.addBook', book );
+    this.setState({book});
+    Channel.emit('myBooklist.addBook', book);
   }
   addToRead = () => {
     var book = this.state.book;
@@ -26,11 +27,11 @@ export default class BookItem extends React.Component {
     Channel.emit('myBooklist.addBook', book );
   }
   showBookDetail = () =>  {
-    Channel.emit('myBooklist.showBookDetail', this.state.book);
+    Channel.emit('myBooklist.showBookDetail' , this.state.book);
   }
   removeBook = () => {
-    LibraryStorage.DB.removeBook(item);
-    Channel.emit('myBooklist.removeBook', this.state.book, this.props.index);
+    LibraryStorage.DB.removeBook(this.state.book);
+    Channel.emit('myBooklist.removeBook', this.state.book);
   }
   saveDateRead = () => {
     var book = this.state.book;
@@ -46,7 +47,7 @@ export default class BookItem extends React.Component {
     return(
         <div className="clearfix" style={divStyle}>
           <Col md={6} className="pull-left">
-            <h5 className="book-title" onClick={this.showBookDetail.bind(this,item)}> {item.title} </h5>
+            <h5 className="book-title" onClick={this.showBookDetail.bind(this)}> {item.title} </h5>
             {item.subtitle ? <h6> {item.subtitle} </h6> : '' }
             <h6> {item.author_name?item.author_name[0]: '' }</h6>
             <small> {item.publisher ? item.publisher[0]: ''} {item.publish_date ?item.publish_date[0]: ''} </small>
@@ -59,7 +60,8 @@ export default class BookItem extends React.Component {
             {!item.isRead ?
               <Button  bsSize="xsmall" className="pull-right" onClick={this.addToRead.bind(this)} >
                 <Glyphicon  glyph="book" /> Mark as Read
-              </Button>:
+              </Button>: '' }
+            { item.isRead && this.props.canMarkAsRead ?
               <FormGroup>
                   <ControlLabel>When:</ControlLabel>
                   <DatePicker showClearButton={false}
@@ -67,11 +69,24 @@ export default class BookItem extends React.Component {
                       dateFormat="DD/MM/YYYY"  ref={(input) => { this.dateInput = input; }}
                       value={item.dateRead?item.dateRead:''} />
                   <Button onClick={this.saveDateRead.bind(this)} bsSize="xsmall"><Glyphicon  glyph="check" /></Button>
-              </FormGroup>}
+              </FormGroup>: ''}
             {this.props.canAddToQueue ?
               <Button  bsSize="xsmall" className="pull-right" onClick={this.addToQueue.bind(this)} >
                 <Glyphicon  glyph="list" /> Add to Queue
-              </Button> : '' }
+              </Button> : ''
+              }
+            {this.props.canPlayBook ?
+              <ButtonToolbar className="pull-right">
+                <Button  bsSize="xsmall" className={item.played?'btn-success':''}  onClick={this.addToQueue.bind(this)} >
+                  <Glyphicon  glyph="play" />
+                </Button>
+                <Button  bsSize="xsmall" className={item.paused?'btn-danger':''}   onClick={this.addToQueue.bind(this)} >
+                  <Glyphicon  glyph="pause" />
+                </Button>
+                <Button  bsSize="xsmall" disabled={!item.played} onClick={this.addToQueue.bind(this)} >
+                  <Glyphicon  glyph="book" />
+                </Button>
+              </ButtonToolbar> : '' }
 
           </Col>
         </div>

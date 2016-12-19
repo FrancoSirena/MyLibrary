@@ -11,6 +11,22 @@ export default class SearchApi extends React.Component {
     myBooks: [],
     isLoading: false
   }
+  componentDidMount = () => {
+    Channel.on('myBooklist.addBook', this.removeBook);
+  }
+  componentWillUnmount = () => {
+    Channel.removeListener('myBooklist.addBook', this.removeBook);
+  }
+  removeBook = (item) => {
+    var myBooks = this.state.myBooks;
+    var index = myBooks.findIndex(c=>c.key == item.key);
+    if (index > -1){
+      myBooks.splice(index, 1);
+
+      this.setState({myBooks});
+    }
+
+  }
   setFilter = () => {
     var titleFilter = this.titleFilter.value;
     var authorFilter = this.authorFilter.value;
@@ -30,19 +46,6 @@ export default class SearchApi extends React.Component {
   clearList = () => {
     var myBooks = [];
     this.setState({myBooks});
-  }
-  addToQueue = (bookEntry) => {
-    var book = bookEntry;
-    book.isRead = false;
-    Channel.emit('myBooklist.addBook', book );
-  }
-  addToRead = (bookEntry) => {
-    var book = bookEntry;
-    book.isRead = true;
-    Channel.emit('myBooklist.addBook', book );
-  }
-  showBookDetail = (book) =>  {
-    Channel.emit('myBooklist.showBookDetail', book);
   }
   render(){
     var state= this.state;
@@ -79,7 +82,7 @@ export default class SearchApi extends React.Component {
               return(
               <ListGroupItem
                   key={index}>
-                  <BookItem book={item}  canRemove={false}  index={index} canAddToQueue={true} />
+                  <BookItem book={item}  key={item.key} id={item.key} canRemove={false}  index={index} canAddToQueue={true} canMarkAsRead={false} />
               </ListGroupItem> );
             })}
         </ListGroup> :

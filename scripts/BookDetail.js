@@ -7,42 +7,47 @@ export default class BookDetail extends React.Component{
   state = {
     show: false,
     bookInfo: '',
-    key: ''
+    _isMounted: false
   }
   componentDidMount = () => {
+    this.setState({_isMounted:true});
     Channel.on('myBooklist.showBookDetail', this.showBookDetail);
   }
   componenteWillUnmount = () => {
+    this.setState({_isMounted:false});
     Channel.removeListener('myBooklist.showBookDetail', this.showBookDetail);
   }
   showBookDetail = (book) => {
     var bookInfo =  this.state.bookInfo;
     bookInfo = book;
-    var key = book.__key;
-    this.setState({bookInfo});
-    this.setState({key});
-    this.showModal();
+    if (this.state._isMounted){
+      this.setState({bookInfo});
+      this.showModal();
+    }
   }
   showModal = () => {
-    this.setState({show: true});
+    if (this.state._isMounted)
+      this.setState({show: true});
   }
   hideModal = () => {
-    this.setState({show: false});
+    if (this.state._isMounted)
+      this.setState({show: false});
   }
   render() {
     return (
         <Modal
           show={this.state.show}
           onHide={this.hideModal}
-          aria-labelledby="contained-modal-title-sm"
-        >
+          key={this.state.bookInfo.key}
+          id={this.state.bookInfo.key}
+          aria-labelledby="contained-modal-title-sm">
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-lg">{this.state.bookInfo.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body >
             <div className="clearfix">
               <Col md={4} xs={4}>
-                <img src={OpenLibraryService.API.getImgUrl(this.state.key)} width="140px" height="170px" />
+                <img src={OpenLibraryService.API.getImgUrl(this.state.bookInfo.__key)} width="140px" height="170px" />
               </Col>
               <Col md={8} xs={8} >
                 {this.state.bookInfo.subtitle ? <h4> {this.state.bookInfo.subtitle} </h4> : '' }
