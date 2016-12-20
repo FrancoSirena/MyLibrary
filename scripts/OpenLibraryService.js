@@ -9,6 +9,7 @@ var OpenLibraryService = {
 				.then(response => response.data);
 		},
 		getImgUrl: (key) => {
+
 			return `${OpenLibraryService.API.imgUrl}${key}-M.jpg`;
 		},
 		OpenLibrary: {

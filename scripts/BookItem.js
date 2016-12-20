@@ -5,6 +5,7 @@ import Channel from "./Channel";
 import DatePicker from 'react-bootstrap-date-picker';
 import LibraryStorage from "./LibraryStorage";
 
+const now = new Date();
 export default class BookItem extends React.Component {
   state = {
     book: ''
@@ -20,9 +21,20 @@ export default class BookItem extends React.Component {
     this.setState({book});
     Channel.emit('myBooklist.addBook', book);
   }
-  addToRead = () => {
+  addToReading = () => {
+    var book = this.state.book;
+    book.isReading = true;
+    this.setState({book});
+    Channel.emit('myBooklist.addBook', book);
+  }
+  addToRead = (item) => {
     var book = this.state.book;
     book.isRead = true;
+    if (book.isReading){
+      book.dateRead  = now.toISOString();
+      book.isReading = false;
+    }
+
     this.setState({book});
     Channel.emit('myBooklist.addBook', book );
   }
@@ -57,36 +69,31 @@ export default class BookItem extends React.Component {
               <Button onClick={this.removeBook.bind(this)} className="close" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </Button>: '' }
-            {!item.isRead ?
-              <Button  bsSize="xsmall" className="pull-right" onClick={this.addToRead.bind(this)} >
-                <Glyphicon  glyph="book" /> Mark as Read
+            {this.props.canPlayReading && !item.isRead && !item.isReading ?
+              <Button  bsSize="xsmall" className="pull-right" onClick={this.addToReading.bind(this)} >
+                <Glyphicon  glyph="hourglass" /> Start Reading
               </Button>: '' }
-            { item.isRead && this.props.canMarkAsRead ?
+            {(!item.isRead && this.props.canMarkAsRead) || item.isReading ?
+              <div>
+                <span className='text-success'> <small>Reading</small> </span>
+                <Button  bsSize="xsmall" className="pull-right" onClick={this.addToRead.bind(this)} >
+                  <Glyphicon  glyph="book" /> Mark As Read
+                </Button>
+              </div>: '' }
+            { item.isRead ?
               <FormGroup>
                   <ControlLabel>When:</ControlLabel>
                   <DatePicker showClearButton={false}
                       disabled={item.dateRead != null} id="datepicker" style={styleDate}
                       dateFormat="DD/MM/YYYY"  ref={(input) => { this.dateInput = input; }}
                       value={item.dateRead?item.dateRead:''} />
-                  <Button onClick={this.saveDateRead.bind(this)} bsSize="xsmall"><Glyphicon  glyph="check" /></Button>
+                  {item.dateRead?'':<Button onClick={this.saveDateRead.bind(this)} bsSize="xsmall"><Glyphicon  glyph="check" /></Button>}
               </FormGroup>: ''}
             {this.props.canAddToQueue ?
               <Button  bsSize="xsmall" className="pull-right" onClick={this.addToQueue.bind(this)} >
                 <Glyphicon  glyph="list" /> Add to Queue
               </Button> : ''
               }
-            {this.props.canPlayBook ?
-              <ButtonToolbar className="pull-right">
-                <Button  bsSize="xsmall" className={item.played?'btn-success':''}  onClick={this.addToQueue.bind(this)} >
-                  <Glyphicon  glyph="play" />
-                </Button>
-                <Button  bsSize="xsmall" className={item.paused?'btn-danger':''}   onClick={this.addToQueue.bind(this)} >
-                  <Glyphicon  glyph="pause" />
-                </Button>
-                <Button  bsSize="xsmall" disabled={!item.played} onClick={this.addToQueue.bind(this)} >
-                  <Glyphicon  glyph="book" />
-                </Button>
-              </ButtonToolbar> : '' }
 
           </Col>
         </div>

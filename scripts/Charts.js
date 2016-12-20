@@ -4,9 +4,15 @@ import ReactHighcharts from 'react-highcharts';
 import Highcharts from 'highcharts';
 import higchartsDrilldown from 'highcharts/modules/drilldown';
 import LibraryStorage from "./LibraryStorage";
-
-const data = LibraryStorage.DB.getChartData();
+import BookListChart from "./BookListChart";
+import Channel from "./Channel";
 const defaultConfig = {
+        chart: {
+            type: 'column'
+        },
+        rangeSelector: {
+            selected: 1
+        },
         title: {
             text: 'My Reading Progress'
         },
@@ -17,17 +23,27 @@ const defaultConfig = {
         legend: {
             enabled: false
         },
-
+        tooltip: {
+            enabled: true
+        },
         plotOptions: {
             series: {
                 borderWidth: 0,
                 dataLabels: {
-                    enabled: true
+                    enabled: false
+                },
+                point: {
+                    events: {
+                        click:function (e) {
+                          if (e.point.name != null)
+                            Channel.emit('myBooklist.showBookListByMonth' , e.point.index);
+                        }
+                    }
                 }
             }
         },
-        series: data.series,  
-        drilldown: data.drilldown
+        series: [],
+        drilldown: {}
 };
 
 
@@ -58,8 +74,23 @@ class Chart extends React.Component {
 }
 
 class Charts extends React.Component {
+  state = {
+    config: {}
+  }
+  componentWillMount = () => {
+    var data = LibraryStorage.DB.getChartData();
+    this.setState({data: data});
+    var config = defaultConfig;
+    config.series = data.series;
+    config.drilldown = data.drilldown;
+    this.setState({config :config});
+  }
   render() {
-    return(<Chart container='Chart' options={defaultConfig} modules={[higchartsDrilldown]} />);
+    return(
+      <div>
+        <BookListChart />
+        <Chart container='Chart' options={this.state.config} modules={[higchartsDrilldown]} />
+      </div>);
   }
 }
 

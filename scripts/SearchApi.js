@@ -82,7 +82,7 @@ export default class SearchApi extends React.Component {
               return(
               <ListGroupItem
                   key={index}>
-                  <BookItem book={item}  key={item.key} id={item.key} canRemove={false}  index={index} canAddToQueue={true} canMarkAsRead={false} />
+                  <BookItem book={item}  key={item.key} id={item.key} canRemove={false}  index={index} canAddToQueue={true} canMarkAsRead={true} />
               </ListGroupItem> );
             })}
         </ListGroup> :

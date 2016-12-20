@@ -23,35 +23,52 @@ var LibraryStorage = {
       }
       return books;
     },
-    getChartData: () => {
+    getBooksByMonth: (month) => {
       var keys = Object.keys(localStorage);
       var books = [];
       var i = keys.length;
-      var months =[];
-      months.push({y: 0, name: 'January', drilldown: 'jan'});
-      months.push({y: 0, name: 'February', drilldown: 'fev'});
-      months.push({y: 0, name: 'March', drilldown: 'mar'});
-      months.push({y: 0, name: 'April', drilldown: 'apr'});
-      months.push({y: 0, name: 'May', drilldown: 'may'});
-      months.push({y: 0, name: 'June', drilldown: 'jun'});
-      months.push({y: 0, name: 'July', drilldown: 'jul'});
-      months.push({y: 0, name: 'August', drilldown: 'aug'});
-      months.push({y: 0, name: 'September', drilldown: 'sep'});
-      months.push({y: 0, name: 'October', drilldown: 'oct'});
-      months.push({y: 0, name: 'November', drilldown: 'nov'});
-      months.push({y: 0, name: 'December', drilldown: 'dec'});
-      var drillData = [];
-      for (var m = 0; m < 12; m++) {
-        drillData.push({id: months[m].drilldown, data: []});
+      while ( i-- ) {
+        if (keys[i].indexOf("myPersonalLib") >-1)
+          var item = localStorage.getItem(keys[i]);
+          if (item.dateRead){
+            var date = new Date(item.dateRead);
+            if (item.getMont() == month)
+              books.push(JSON.parse(item));
+          }
+
       }
+      return books;
+    },
+    getChartData: () => {
+      var keys = Object.keys(localStorage);
+      var i = keys.length;
+      var months =[];
+      var mYears =[];
+      var mDrill =[];
+      months.push(['January', 0]);
+      months.push(['February',0]);
+      months.push(['March',0]);
+      months.push(['April',0]);
+      months.push(['May',0]);
+      months.push(['June',0]);
+      months.push(['July',0]);
+      months.push(['August', 0]);
+      months.push(['September',0]);
+      months.push(['October',0]);
+      months.push(['November',0]);
+      months.push(['December',0]);
       while ( i-- ) {
         if (keys[i].indexOf("myPersonalLib") >-1) {
           var item = JSON.parse(localStorage.getItem(keys[i]));
           if (item.dateRead != undefined) {
             var date = new Date(item.dateRead);
-            months[date.getMonth()].y += 1;
-            drillData[date.getMonth()].data.push([item.title, 1]);
-            books.push(item);
+            if (!mYears.length || !mYears.some(e=>e.name==date.getFullYear())){
+              mYears.push({y:0, name: date.getFullYear(), drilldown:date.getFullYear()});
+              mDrill.push({id:date.getFullYear(), name:"Books",data:months});
+            }
+            var index = mYears.findIndex(e=>e.name==date.getFullYear());
+            mYears[index].y += 1;
+            mDrill[index].data[date.getMonth()][1] += 1;
           }
 
         }
@@ -64,12 +81,13 @@ var LibraryStorage = {
           type: 'column',
           name: 'Months',
           colorByPoint: true,
-          data: months
+          data: mYears
         }],
-      drilldown: {
-          series: drillData
+        drilldown: {
+          series: mDrill
         }
       };
+
 
       return chartData;
     }

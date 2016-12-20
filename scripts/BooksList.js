@@ -19,21 +19,12 @@ export default class BooksList extends React.Component {
     myBooks = LibraryStorage.DB.getAllBooks();
 
     myBooks = myBooks.sort(function (a, b) {
-                            if (!a.isRead){
-                              if (a.title > b.title){
-                                return 1;
-                              }
-                              if (a.title < b.title) {
+                              if (a.isReading || !a.dateRead || Date.parse(a.dateRead) > Date.parse(b.dateRead)) {
                                 return -1;
                               }
-                            } else {
-                              if (Date.parse(a.dateRead) < Date.parse(b.dateRead)) {
+                              if (b.isReading || !b.dateRead ||Date.parse(a.dateRead) < Date.parse(b.dateRead)) {
                                 return 1;
                               }
-                              if (Date.parse(a.dateRead) > Date.parse(b.dateRead)) {
-                                return -1;
-                              }
-                            }
                             return 0;
                           });
     this.setState({myBooks});
@@ -45,7 +36,7 @@ export default class BooksList extends React.Component {
   addBook = (bookEntry) => {
     var myBooks = this.state.myBooks;
     if (!myBooks.some(e => e.key == bookEntry.key)){
-      myBooks.push(bookEntry);
+      myBooks.unshift(bookEntry);
     }
     this.setState({myBooks});
     LibraryStorage.DB.saveBook(bookEntry);
@@ -63,18 +54,16 @@ export default class BooksList extends React.Component {
     Channel.emit('myBooklist.showBookDetail', book );
   }
   render() {
-    var styleDate = {width:'120px'};
-    var divStyle = {width: '100%'};
-
+  
     return(
-      <Col md={12} xs={12}>
+      <Col md={12} xs={12} >
         { this.state.myBooks.length ?
           <ListGroup ref="booksShelf">
           {
             this.state.myBooks.map((item, index) => {return(
                   <ListGroupItem
                       key={index}>
-                      <BookItem book={item} key={item.key} id={item.key} index={index} canRemove={true} canAddToQueue={false} canMarkAsRead={false} canPlayBook={true}/>
+                      <BookItem book={item} key={item.key} id={item.key} index={index} canPlayReading={true} canRemove={true} canAddToQueue={false}/>
                   </ListGroupItem>
                 );
             })
