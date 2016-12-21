@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
-import {Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
+import {Fade,Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
 import OpenLibraryService from './OpenLibraryService';
 import Channel from "./Channel";
 import {DateField} from 'react-date-picker';
@@ -9,7 +9,8 @@ import BookItem from './BookItem';
 export default class SearchApi extends React.Component {
   state = {
     myBooks: [],
-    isLoading: false
+    isLoading: false,
+    isEmpty: false
   }
   componentDidMount = () => {
     Channel.on('myBooklist.addBook', this.removeBook);
@@ -32,20 +33,26 @@ export default class SearchApi extends React.Component {
     var authorFilter = this.authorFilter.value;
     var keywordsFilter = this.keywordsFilter.value;
     var myBooks = [];
-    var isLoading = false;
 
-    if (titleFilter != '' || authorFilter != ''){
+    if (titleFilter != '' || authorFilter != '' || keywordsFilter != ''){
+      this.setState({myBooks});
       myBooks = OpenLibraryService.API.OpenLibrary.searchBook(titleFilter, authorFilter, keywordsFilter).then((myBooks) =>{
         this.setState({myBooks});
+        if (!myBooks.length)
+          this.setState({isEmpty:true});
+        this.setState({isLoading:false});
       });
-      isLoading = true;
+      this.setState({isLoading: true});
+      this.setState({isEmpty:false});
     }
-    this.setState({isLoading});
 
   }
   clearList = () => {
     var myBooks = [];
     this.setState({myBooks});
+  }
+  updateEmptyStatus = () => {
+    setTimeout(()=>{this.setState({isEmpty:false})}, 800);
   }
   render(){
     var state= this.state;
@@ -76,7 +83,7 @@ export default class SearchApi extends React.Component {
             </Button>
           </Col>
         </div>
-        { state.myBooks.length > 0 ?
+        <Fade in={this.state.myBooks.length>0}>
           <ListGroup>{
             state.myBooks.map((item, index)=>{
               return(
@@ -85,9 +92,14 @@ export default class SearchApi extends React.Component {
                   <BookItem book={item}  key={item.key} id={item.key} canRemove={false}  index={index} canAddToQueue={true} canMarkAsRead={true} />
               </ListGroupItem> );
             })}
-        </ListGroup> :
-        state.isLoading ?<p className="text-muted"> Loading .... </p>: ''
-        }
+          </ListGroup>
+        </Fade>
+        <Fade in={this.state.isLoading}>
+          <p className="text-muted"> Loading .... </p>
+        </Fade>
+        <Fade in={this.state.isEmpty} onEntered={this.updateEmptyStatus.bind(this)} >
+          <p className="text-muted"> No results were found </p>
+        </Fade>
       </div>
     );
   }

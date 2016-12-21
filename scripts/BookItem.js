@@ -75,7 +75,7 @@ export default class BookItem extends React.Component {
               </Button>: '' }
             {(!item.isRead && this.props.canMarkAsRead) || item.isReading ?
               <div>
-                <span className='text-success'> <small>Reading</small> </span>
+                {item.isReading?<span className='text-success'> <small>Reading</small> </span>:''}
                 <Button  bsSize="xsmall" className="pull-right" onClick={this.addToRead.bind(this)} >
                   <Glyphicon  glyph="book" /> Mark As Read
                 </Button>

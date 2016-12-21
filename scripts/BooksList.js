@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
+import {Button, Fade,Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
 import Channel from "./Channel";
 import LibraryStorage from "./LibraryStorage";
 import {DateField} from 'react-date-picker';
@@ -54,10 +54,10 @@ export default class BooksList extends React.Component {
     Channel.emit('myBooklist.showBookDetail', book );
   }
   render() {
-  
+
     return(
       <Col md={12} xs={12} >
-        { this.state.myBooks.length ?
+        <Fade in={this.state.myBooks.length>0}>
           <ListGroup ref="booksShelf">
           {
             this.state.myBooks.map((item, index) => {return(
@@ -68,8 +68,8 @@ export default class BooksList extends React.Component {
                 );
             })
           }
-          </ListGroup>:
-          '' }
+          </ListGroup>
+        </Fade>
       </Col>);
   }
 }

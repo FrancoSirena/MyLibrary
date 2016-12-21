@@ -20,11 +20,11 @@ export default class BookListChart extends React.Component{
     this.setState({_isMounted:false});
     Channel.removeListener('myBooklist.showBookListByMonth', this.showBookListByMonth);
   }
-  showBookListByMonth = (month) => {
+  showBookListByMonth = (month, year) => {
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     this.setState({month: months[month]});
     var myBooks =  this.state.myBooks;
-    myBooks = LibraryStorage.DB.getBooksByMonth(month);
+    myBooks = LibraryStorage.DB.getBooksByMonth(month, year);
     this.setState({myBooks});
     if (this.state._isMounted){
       this.showModal();

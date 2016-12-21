@@ -23,17 +23,17 @@ var LibraryStorage = {
       }
       return books;
     },
-    getBooksByMonth: (month) => {
+    getBooksByMonth: (month, year) => {
       var keys = Object.keys(localStorage);
       var books = [];
       var i = keys.length;
       while ( i-- ) {
         if (keys[i].indexOf("myPersonalLib") >-1)
-          var item = localStorage.getItem(keys[i]);
+          var item = JSON.parse(localStorage.getItem(keys[i]));
           if (item.dateRead){
             var date = new Date(item.dateRead);
-            if (item.getMont() == month)
-              books.push(JSON.parse(item));
+            if (date.getMonth() == month && date.getFullYear() == year)
+              books.push(item);
           }
 
       }
@@ -42,21 +42,8 @@ var LibraryStorage = {
     getChartData: () => {
       var keys = Object.keys(localStorage);
       var i = keys.length;
-      var months =[];
       var mYears =[];
       var mDrill =[];
-      months.push(['January', 0]);
-      months.push(['February',0]);
-      months.push(['March',0]);
-      months.push(['April',0]);
-      months.push(['May',0]);
-      months.push(['June',0]);
-      months.push(['July',0]);
-      months.push(['August', 0]);
-      months.push(['September',0]);
-      months.push(['October',0]);
-      months.push(['November',0]);
-      months.push(['December',0]);
       while ( i-- ) {
         if (keys[i].indexOf("myPersonalLib") >-1) {
           var item = JSON.parse(localStorage.getItem(keys[i]));
@@ -64,11 +51,16 @@ var LibraryStorage = {
             var date = new Date(item.dateRead);
             if (!mYears.length || !mYears.some(e=>e.name==date.getFullYear())){
               mYears.push({y:0, name: date.getFullYear(), drilldown:date.getFullYear()});
-              mDrill.push({id:date.getFullYear(), name:"Books",data:months});
+              mDrill.push({id:date.getFullYear(), name:date.getFullYear(),data:[{name:'January', y:0},{name:'February', y:0}
+                                                                                    ,{name:'March', y:0},{name:'April', y:0}
+                                                                                    ,{name:'May', y:0},{name:'June', y:0}
+                                                                                    ,{name:'July', y:0},{name:'August', y:0}
+                                                                                    ,{name:'September', y:0},{name:'October', y:0}
+                                                                                    ,{name:'November', y:0},{name:'December', y:0}]});
             }
             var index = mYears.findIndex(e=>e.name==date.getFullYear());
             mYears[index].y += 1;
-            mDrill[index].data[date.getMonth()][1] += 1;
+            mDrill[index].data[date.getMonth()].y += 1;
           }
 
         }

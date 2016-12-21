@@ -1,6 +1,5 @@
 import React from 'react';
 import {render} from 'react-dom';
-import ReactHighcharts from 'react-highcharts';
 import Highcharts from 'highcharts';
 import higchartsDrilldown from 'highcharts/modules/drilldown';
 import LibraryStorage from "./LibraryStorage";
@@ -9,9 +8,6 @@ import Channel from "./Channel";
 const defaultConfig = {
         chart: {
             type: 'column'
-        },
-        rangeSelector: {
-            selected: 1
         },
         title: {
             text: 'My Reading Progress'
@@ -28,22 +24,18 @@ const defaultConfig = {
         },
         plotOptions: {
             series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: false
-                },
                 point: {
                     events: {
                         click:function (e) {
-                          if (e.point.name != null)
-                            Channel.emit('myBooklist.showBookListByMonth' , e.point.index);
+                          if (e.point.series)
+                            Channel.emit('myBooklist.showBookListByMonth' , e.point.index, e.point.series.options.id);
                         }
                     }
                 }
             }
         },
         series: [],
-        drilldown: {}
+        drilldown: {series:[]}
 };
 
 
@@ -64,9 +56,6 @@ class Chart extends React.Component {
       );
   }
 
-  componentWillUnmount =  () => {
-      this.chart.destroy();
-  }
 
   render() {
       return (<div  id ={this.props.container} ></div>);
@@ -82,7 +71,7 @@ class Charts extends React.Component {
     this.setState({data: data});
     var config = defaultConfig;
     config.series = data.series;
-    config.drilldown = data.drilldown;
+    config.drilldown.series = data.drilldown.series;
     this.setState({config :config});
   }
   render() {
