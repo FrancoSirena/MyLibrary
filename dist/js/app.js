@@ -95,6 +95,19 @@
 						_reactBootstrap.Navbar,
 						{ inverse: true, collapseOnSelect: true },
 						_react2.default.createElement(
+							_reactBootstrap.Navbar.Header,
+							null,
+							_react2.default.createElement(
+								_reactBootstrap.Navbar.Brand,
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									'Franco Sirena'
+								)
+							)
+						),
+						_react2.default.createElement(
 							_reactBootstrap.Nav,
 							{ pullLeft: true },
 							_react2.default.createElement(
@@ -114,20 +127,6 @@
 									{ eventKey: 2 },
 									'Progress'
 								)
-							)
-						),
-						_react2.default.createElement(
-							_reactBootstrap.Nav,
-							{ pullRight: true },
-							_react2.default.createElement(
-								_reactBootstrap.NavItem,
-								{ eventKey: 3 },
-								'GitHub'
-							),
-							_react2.default.createElement(
-								_reactBootstrap.NavItem,
-								{ eventKey: 4 },
-								'About Me'
 							)
 						)
 					),
@@ -49477,7 +49476,7 @@
 	          ) : '',
 	          this.props.canAddToQueue ? _react2.default.createElement(
 	            _reactBootstrap.Button,
-	            { bsSize: 'xsmall', className: 'pull-right', onClick: this.addToQueue.bind(this) },
+	            { bsSize: 'xsmall', id: 'btnAddQueue', className: 'pull-right', onClick: this.addToQueue.bind(this) },
 	            _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'list' }),
 	            ' Add to Queue'
 	          ) : ''
@@ -50307,7 +50306,7 @@
 	          _react2.default.createElement(
 	            _reactBootstrap.Col,
 	            { md: 12 },
-	            _react2.default.createElement(_reactBootstrap.FormControl, { type: 'text', inputRef: function inputRef(ref) {
+	            _react2.default.createElement(_reactBootstrap.FormControl, { type: 'text', id: 'bookTitle', inputRef: function inputRef(ref) {
 	                _this2.titleFilter = ref;
 	              }, placeholder: 'Search By Title', maxLength: '100' })
 	          ),
@@ -81724,7 +81723,7 @@
 	          { 'in': this.state.myBooks.length > 0 },
 	          _react2.default.createElement(
 	            _reactBootstrap.ListGroup,
-	            { ref: 'booksShelf' },
+	            { id: 'bookShelf', ref: 'booksShelf' },
 	            this.state.myBooks.map(function (item, index) {
 	              return _react2.default.createElement(
 	                _reactBootstrap.ListGroupItem,

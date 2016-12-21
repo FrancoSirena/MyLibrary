@@ -69,7 +69,7 @@ export default class SearchApi extends React.Component {
             <FormControl type="text" inputRef={ref => { this.keywordsFilter = ref; }} placeholder="Search By KeyWords" maxLength="100" />
           </Col>
           <Col md={12}>
-            <FormControl type="text" inputRef={ref => { this.titleFilter = ref; }} placeholder="Search By Title" maxLength="100" />
+            <FormControl type="text" id="bookTitle" inputRef={ref => { this.titleFilter = ref; }} placeholder="Search By Title" maxLength="100" />
           </Col>
           <Col xs={8} md={8}>
             <FormControl type="text" inputRef={ref => { this.authorFilter = ref; }}  placeholder="Search By Author" maxLength="100" />

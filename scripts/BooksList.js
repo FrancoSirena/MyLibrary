@@ -58,7 +58,7 @@ export default class BooksList extends React.Component {
     return(
       <Col md={12} xs={12} >
         <Fade in={this.state.myBooks.length>0}>
-          <ListGroup ref="booksShelf">
+          <ListGroup id="bookShelf" ref="booksShelf">
           {
             this.state.myBooks.map((item, index) => {return(
                   <ListGroupItem

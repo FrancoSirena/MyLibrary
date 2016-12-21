@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {Router, Route, Link, IndexRoute, IndexRedirect,withRouter} from 'react-router';
+import {Router, Route, browserHistory,Link, IndexRoute, IndexRedirect,withRouter} from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 import Charts from './Charts';
 import Index from './Index';
@@ -11,6 +11,11 @@ class App extends React.Component {
 		return (
 			<Col xs={12} md={12}>
 				<Navbar inverse collapseOnSelect>
+					<Navbar.Header>
+			      <Navbar.Brand>
+			        <a href="#">Franco Sirena</a>
+			      </Navbar.Brand>
+			    </Navbar.Header>
 					<Nav pullLeft>
 						<LinkContainer to="/index">
 							<NavItem eventKey={1}>Bookshelf</NavItem>
@@ -18,10 +23,6 @@ class App extends React.Component {
 						<LinkContainer to="/charts">
 							<NavItem eventKey={2}>Progress</NavItem>
 						</LinkContainer>
-					</Nav>
-					<Nav pullRight>
-						<NavItem eventKey={3}>GitHub</NavItem>
-						<NavItem eventKey={4}>About Me</NavItem>
 					</Nav>
 				</Navbar>
 				<Col xs={12} md={12} className="text-center">

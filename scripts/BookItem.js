@@ -90,7 +90,7 @@ export default class BookItem extends React.Component {
                   {item.dateRead?'':<Button onClick={this.saveDateRead.bind(this)} bsSize="xsmall"><Glyphicon  glyph="check" /></Button>}
               </FormGroup>: ''}
             {this.props.canAddToQueue ?
-              <Button  bsSize="xsmall" className="pull-right" onClick={this.addToQueue.bind(this)} >
+              <Button  bsSize="xsmall" id="btnAddQueue" className="pull-right" onClick={this.addToQueue.bind(this)} >
                 <Glyphicon  glyph="list" /> Add to Queue
               </Button> : ''
               }
