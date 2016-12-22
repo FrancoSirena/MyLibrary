@@ -12,7 +12,7 @@ export default class Index extends React.Component {
         <BookDetail />
         <Col xs={6} md={6}>
             <h4> My Bookshelf </h4>
-            <BooksList readBooks={true} />
+            <BooksList id="mBookList" readBooks={true} />
         </Col>
         <Col xs={6} md={6}>
           <SearchApi />

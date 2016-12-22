@@ -1,5 +1,4 @@
 import React from 'react';
-import TextField from 'material-ui/TextField';
 import {Fade,Button, Col, ListGroup, ListGroupItem, FormControl,Glyphicon } from 'react-bootstrap';
 import OpenLibraryService from './OpenLibraryService';
 import Channel from "./Channel";
@@ -75,7 +74,7 @@ export default class SearchApi extends React.Component {
             <FormControl type="text" inputRef={ref => { this.authorFilter = ref; }}  placeholder="Search By Author" maxLength="100" />
           </Col>
           <Col xs={4} md={4}>
-            <Button bsSize="xsmall" onClick={this.setFilter.bind(this)}>
+            <Button bsSize="xsmall" id="btnSearch" onClick={this.setFilter.bind(this)}>
               <Glyphicon glyph="glyphiocon glyphicon-search" />
             </Button>
             <Button bsSize="xsmall" onClick={this.clearList.bind(this)}>
