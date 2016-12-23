@@ -6,6 +6,12 @@ import {DateField} from 'react-date-picker';
 import BookItem from './BookItem';
 
 export default class SearchApi extends React.Component {
+  constructor() {
+    super();
+    this.titleFilter = '';
+    this.keywordsFilter = '';
+    this.authorFilter = ''  ;
+  }
   state = {
     myBooks: [],
     isLoading: false,
@@ -27,22 +33,27 @@ export default class SearchApi extends React.Component {
     }
 
   }
+  loadMySearch = (titleFilter, authorFilter, keywordsFilter) => {
+    var myBooks = [];
+    this.setState({myBooks});
+
+    myBooks = OpenLibraryService.API.OpenLibrary.searchBook(titleFilter, authorFilter, keywordsFilter).then((myBooks) =>{
+
+      this.setState({myBooks});
+      if (!myBooks.length)
+        this.setState({isEmpty:true});
+      this.setState({isLoading:false});
+    });
+    this.setState({isLoading: true});
+    this.setState({isEmpty:false});
+  }
   setFilter = () => {
     var titleFilter = this.titleFilter.value;
     var authorFilter = this.authorFilter.value;
     var keywordsFilter = this.keywordsFilter.value;
-    var myBooks = [];
 
     if (titleFilter != '' || authorFilter != '' || keywordsFilter != ''){
-      this.setState({myBooks});
-      myBooks = OpenLibraryService.API.OpenLibrary.searchBook(titleFilter, authorFilter, keywordsFilter).then((myBooks) =>{
-        this.setState({myBooks});
-        if (!myBooks.length)
-          this.setState({isEmpty:true});
-        this.setState({isLoading:false});
-      });
-      this.setState({isLoading: true});
-      this.setState({isEmpty:false});
+      this.loadMySearch(titleFilter, authorFilter, keywordsFilter);
     }
 
   }
@@ -68,7 +79,7 @@ export default class SearchApi extends React.Component {
             <FormControl type="text" inputRef={ref => { this.keywordsFilter = ref; }} placeholder="Search By KeyWords" maxLength="100" />
           </Col>
           <Col md={12}>
-            <FormControl type="text" id="bookTitle" inputRef={ref => { this.titleFilter = ref; }} placeholder="Search By Title" maxLength="100" />
+            <FormControl type="text" id="bookTitle"  inputRef={ref => { this.titleFilter = ref; }} placeholder="Search By Title" maxLength="100" />
           </Col>
           <Col xs={8} md={8}>
             <FormControl type="text" inputRef={ref => { this.authorFilter = ref; }}  placeholder="Search By Author" maxLength="100" />
@@ -83,7 +94,7 @@ export default class SearchApi extends React.Component {
           </Col>
         </div>
         <Fade in={this.state.myBooks.length>0}>
-          <ListGroup>{
+          <ListGroup id="listBooks">{
             state.myBooks.map((item, index)=>{
               return(
               <ListGroupItem
