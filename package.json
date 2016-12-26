@@ -64,12 +64,14 @@
     "webpack": "^1.12.6"
   },
   "dependencies": {
+    "gulp-open": "^2.0.0",
     "react": "^15.0.2",
     "react-addons-css-transition-group": "^15.0.2",
     "react-dom": "^15.0.2",
     "react-router": "^2.8.1"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "gulp serve"
   }
 }
