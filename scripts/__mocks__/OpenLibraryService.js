@@ -34,7 +34,8 @@ OpenLibraryService = {
                 ],
                 public_scan_b: true
                 });
-        return new Promise(()=> docs);
+
+        return new Promise((resolve, rejection)=> {resolve(docs)});
       }
     }
   }
